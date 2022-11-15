@@ -34,7 +34,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="visible = false">取消</el-button>
-        <el-button type="primary" @click="addUser">确定</el-button>
+        <el-button type="primary" @click="createUser">确定</el-button>
       </div>
     </el-dialog>
     <el-table
@@ -75,16 +75,16 @@
             title="确认要重置吗"
             @onConfirm="resetPassword(scope.row.uuid)"
           >
-            <el-button slot="reference" type="text">重置</el-button>
+            <el-button slot="reference" type="text">重置密码</el-button>
           </el-popconfirm>
         </template>
       </el-table-column>
     </el-table>
     <el-pagination
       background
-      :current-page="page"
-      :page-size="pageSize"
-      :total="total"
+      :current-page="pagination.page"
+      :page-size="pagination.pageSize"
+      :total="pagination.total"
       layout="total, sizes, prev, pager, next"
       @size-change="sizeChangeHandle"
       @current-change="currentChangeHandle"
@@ -94,7 +94,6 @@
 
 <script>
 import { createUser, deleteUser, findUserList, resetPassword } from '@/api/user'
-import md5 from 'md5'
 
 export default {
   data() {
@@ -108,9 +107,11 @@ export default {
       },
       // table
       data: [],
-      total: 0,
-      page: 1,
-      pageSize: 10
+      pagination: {
+        total: 0,
+        page: 1,
+        pageSize: 10
+      }
     }
   },
   created() {
@@ -120,38 +121,35 @@ export default {
     handleClose(done) {
       done()
     },
+    // table
     sizeChangeHandle(val) {
-      this.pageSize = val
-      this.findList()
+      this.pagination.pageSize = val
+      this.findUserList()
     },
     currentChangeHandle(val) {
-      this.page = val
-      this.findList()
+      this.pagination.page = val
+      this.findUserList()
     },
     indexMethod(index) {
-      return (this.page - 1) * this.pageSize + index + 1
+      return (this.pagination.page - 1) * this.pagination.pageSize + index + 1
+    },
+    // crud
+    createUser() {
+      this.visible = false
+      createUser(this.form).then(r => {
+        this.$message(r.msg)
+        this.findUserList()
+      })
     },
     findUserList() {
+      const { page, pageSize } = this.pagination
       const data = {
-        page: this.page,
-        pageSize: this.pageSize
+        page,
+        pageSize
       }
       findUserList(data).then(r => {
         this.data = r.result.list
-        this.total = r.result.total
-      })
-    },
-    addUser() {
-      this.visible = false
-      const { username, password, authorityId } = this.form
-      const data = {
-        username: username,
-        password: md5(password),
-        authorityId: authorityId
-      }
-      createUser(data).then(r => {
-        this.$message(r.msg)
-        this.findUserList()
+        this.pagination.total = r.result.total
       })
     },
     deleteUser(uuid) {

@@ -8,7 +8,6 @@
         <el-input v-model="form.path" placeholder="请求路径" />
       </el-form-item>
       <el-button type="primary" @click="search">查询</el-button>
-      <el-button @click="reset">重置</el-button>
     </el-form>
     <el-table
       :data="data"
@@ -74,9 +73,9 @@
     </el-table>
     <el-pagination
       background
-      :current-page="page"
-      :page-size="pageSize"
-      :total="total"
+      :current-page="pagination.page"
+      :page-size="pagination.pageSize"
+      :total="pagination.total"
       layout="total, sizes, prev, pager, next, jumper"
       @size-change="sizeChangeHandle"
       @current-change="currentChangeHandle"
@@ -98,42 +97,41 @@ export default {
       },
       // table
       data: [],
-      total: 0,
-      page: 1,
-      pageSize: 10
+      pagination: {
+        total: 0,
+        page: 1,
+        pageSize: 10
+      }
     }
   },
   created() {
-    this.findList()
+    this.findOperationList()
   },
   methods: {
     sizeChangeHandle(val) {
-      this.pageSize = val
-      this.findList()
+      this.pagination.pageSize = val
+      this.findOperationList()
     },
     currentChangeHandle(val) {
-      this.page = val
-      this.findList()
-    },
-    reset() {
-      this.form.operator = ''
-      this.form.path = ''
+      this.pagination.page = val
+      this.findOperationList()
     },
     search() {
-      this.page = 1
-      this.findList()
+      this.pagination.page = 1
+      this.findOperationList()
     },
-    findList() {
+    findOperationList() {
       const { operator, path } = this.form
+      const { page, pageSize } = this.pagination
       const data = {
-        page: this.page,
-        pageSize: this.pageSize,
+        page,
+        pageSize,
         operator,
         path
       }
       findOperationList(data).then(r => {
         this.data = r.result.list
-        this.total = r.result.total
+        this.pagination.total = r.result.total
       })
     },
     formatTime(text) {
