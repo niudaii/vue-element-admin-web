@@ -2,7 +2,6 @@ import request from '@/utils/request'
 
 const userApi = {
   info: '/user/info',
-  menu: '/user/menu',
   userList: '/users',
   create: '/user/create',
   delete: '/user/delete',
@@ -13,13 +12,6 @@ const userApi = {
 export function getInfo() {
   return request({
     url: userApi.info,
-    method: 'get'
-  })
-}
-
-export function getCurrentUserNav() {
-  return request({
-    url: userApi.menu,
     method: 'get'
   })
 }
