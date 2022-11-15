@@ -1,11 +1,11 @@
 import axios from 'axios'
-import { MessageBox, Message } from 'element-ui'
+import { Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
-  baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
+  baseURL: process.env.VUE_APP_BASE_API + 'api/v1', // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
   timeout: 15000 // request timeout
 })
@@ -44,37 +44,13 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
-
-    // if the custom code is not 20000, it is judged as an error.
-    if (res.code !== 200) {
-      Message({
-        message: res.message || 'Error',
-        type: 'error',
-        duration: 5 * 1000
-      })
-
-      // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-      if (res.code === 401) {
-        // to re-login
-        MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
-          confirmButtonText: 'Re-Login',
-          cancelButtonText: 'Cancel',
-          type: 'warning'
-        }).then(() => {
-          store.dispatch('user/resetToken').then(() => {
-            location.reload()
-          })
-        })
-      }
-      return Promise.reject(new Error(res.message || 'Error'))
-    } else {
-      return res
-    }
+    return res
   },
   error => {
     console.log('err' + error) // for debug
+    const data = error.response.data
     Message({
-      message: error.message,
+      message: data.msg,
       type: 'error',
       duration: 5 * 1000
     })

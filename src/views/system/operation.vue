@@ -86,7 +86,7 @@
 
 <script>
 import { formatUtcTime } from '@/utils/timeFormat'
-import { findOperationList } from '@/api/system'
+import { findOperationList } from '@/api/operation'
 
 export default {
   data() {

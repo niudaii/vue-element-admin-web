@@ -93,13 +93,12 @@
 </template>
 
 <script>
-import { addUser, deleteUser, findUserList, resetPassword } from '@/api/system'
+import { createUser, deleteUser, findUserList, resetPassword } from '@/api/user'
 import md5 from 'md5'
 
 export default {
   data() {
     return {
-      // visible
       visible: false,
       // form
       form: {
@@ -115,7 +114,7 @@ export default {
     }
   },
   created() {
-    this.findList()
+    this.findUserList()
   },
   methods: {
     handleClose(done) {
@@ -132,7 +131,7 @@ export default {
     indexMethod(index) {
       return (this.page - 1) * this.pageSize + index + 1
     },
-    findList() {
+    findUserList() {
       const data = {
         page: this.page,
         pageSize: this.pageSize
@@ -150,16 +149,16 @@ export default {
         password: md5(password),
         authorityId: authorityId
       }
-      addUser(data).then(r => {
+      createUser(data).then(r => {
         this.$message(r.msg)
-        this.findList()
+        this.findUserList()
       })
     },
     deleteUser(uuid) {
       const data = { uuid }
       deleteUser(data).then(r => {
         this.$message(r.msg)
-        this.findList()
+        this.findUserList()
       })
     },
     resetPassword(uuid) {

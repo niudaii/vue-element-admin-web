@@ -13,7 +13,7 @@
         <el-input
           ref="username"
           v-model="loginForm.username"
-          placeholder="Username"
+          placeholder="账号"
           name="username"
           type="text"
           tabindex="1"
@@ -31,7 +31,7 @@
             ref="password"
             v-model="loginForm.password"
             :type="passwordType"
-            placeholder="Password"
+            placeholder="密码"
             name="password"
             tabindex="2"
             autocomplete="on"
@@ -51,47 +51,38 @@
         </span>
         <el-input
           v-model="loginForm.captcha"
-          placeholder="Captcha"
+          placeholder="验证码"
           type="text"
           style="width: 250px"
+          @keyup.enter.native="handleLogin"
         />
         <div class="vPic">
-          <img v-if="picPath" :src="picPath" alt="请输入验证码" @click="freshCaptcha()">
+          <img v-if="picPath" :src="picPath" @click="freshCaptcha()">
         </div>
       </el-form-item>
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
+      <el-button :loading="loading" type="primary" style="width:100%" @click="handleLogin">登录</el-button>
     </el-form>
-
-    <el-dialog title="Or connect with" :visible.sync="showDialog">
-      Can not be simulated on local, so please combine you own business simulation! ! !
-      <br>
-      <br>
-      <br>
-      <social-sign />
-    </el-dialog>
   </div>
 </template>
 
 <script>
 import { validUsername } from '@/utils/validate'
-import SocialSign from './components/SocialSignin'
-import { captcha } from '@/api/user'
+import { captcha } from '@/api/base'
 import md5 from 'md5'
 
 export default {
   name: 'Login',
-  components: { SocialSign },
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
+        callback(new Error('请输入用户名'))
       } else {
         callback()
       }
     }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
+        callback(new Error('密码长度不能小于6位'))
       } else {
         callback()
       }
@@ -114,18 +105,6 @@ export default {
       showDialog: false,
       redirect: undefined,
       otherQuery: {}
-    }
-  },
-  watch: {
-    $route: {
-      handler: function(route) {
-        const query = route.query
-        if (query) {
-          this.redirect = query.redirect
-          this.otherQuery = this.getOtherQuery(query)
-        }
-      },
-      immediate: true
     }
   },
   created() {
@@ -189,33 +168,7 @@ export default {
           return false
         }
       })
-    },
-    getOtherQuery(query) {
-      return Object.keys(query).reduce((acc, cur) => {
-        if (cur !== 'redirect') {
-          acc[cur] = query[cur]
-        }
-        return acc
-      }, {})
     }
-    // afterQRScan() {
-    //   if (e.key === 'x-admin-oauth-code') {
-    //     const code = getQueryObject(e.newValue)
-    //     const codeMap = {
-    //       wechat: 'code',
-    //       tencent: 'code'
-    //     }
-    //     const type = codeMap[this.auth_type]
-    //     const codeName = code[type]
-    //     if (codeName) {
-    //       this.$store.dispatch('LoginByThirdparty', codeName).then(() => {
-    //         this.$router.push({ path: this.redirect || '/' })
-    //       })
-    //     } else {
-    //       alert('第三方登录失败')
-    //     }
-    //   }
-    // }
   }
 }
 </script>
