@@ -68,14 +68,13 @@
             title="确认要删除吗"
             @onConfirm="deleteUser(scope.row.uuid)"
           >
-            <el-button slot="reference" type="text">删除</el-button>
+            <el-button slot="reference" class="operationButton" type="text">删除</el-button>
           </el-popconfirm>
           <el-popconfirm
-            class="cell-button"
             title="确认要重置吗"
             @onConfirm="resetPassword(scope.row.uuid)"
           >
-            <el-button slot="reference" type="text">重置密码</el-button>
+            <el-button slot="reference" class="operationButton" type="text">重置密码</el-button>
           </el-popconfirm>
         </template>
       </el-table-column>
@@ -94,7 +93,6 @@
 
 <script>
 import { createUser, deleteUser, findUserList, resetPassword } from '@/api/user'
-
 export default {
   data() {
     return {
@@ -121,7 +119,6 @@ export default {
     handleClose(done) {
       done()
     },
-    // table
     sizeChangeHandle(val) {
       this.pagination.pageSize = val
       this.findUserList()
@@ -133,7 +130,6 @@ export default {
     indexMethod(index) {
       return (this.pagination.page - 1) * this.pagination.pageSize + index + 1
     },
-    // crud
     createUser() {
       this.visible = false
       createUser(this.form).then(r => {
@@ -173,7 +169,8 @@ export default {
 .top {
   margin-bottom: 20px;
 }
-.cell-button {
-  margin-left: 10px;
+.operationButton {
+  padding-left: 0;
+  padding-right: 20px;
 }
 </style>

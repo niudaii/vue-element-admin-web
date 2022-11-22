@@ -85,7 +85,7 @@
 
 <script>
 import { formatUtcTime } from '@/utils/timeFormat'
-import { findOperationList } from '@/api/operation'
+import { findOperationList } from '@/api/system'
 
 export default {
   data() {
@@ -108,6 +108,9 @@ export default {
     this.findOperationList()
   },
   methods: {
+    formatTime(text) {
+      return formatUtcTime(text)
+    },
     sizeChangeHandle(val) {
       this.pagination.pageSize = val
       this.findOperationList()
@@ -133,9 +136,6 @@ export default {
         this.data = r.result.list
         this.pagination.total = r.result.total
       })
-    },
-    formatTime(text) {
-      return formatUtcTime(text)
     }
   }
 }

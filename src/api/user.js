@@ -1,10 +1,10 @@
 import request from '@/utils/request'
 
 const userApi = {
+  users: '/users',
   info: '/user/info',
-  userList: '/users',
-  create: '/user/create',
-  delete: '/user/delete',
+  createUser: '/user/create',
+  deleteUser: '/user/delete',
   resetPassword: '/user/resetPassword',
   changePassword: '/user/changePassword'
 }
@@ -34,7 +34,7 @@ export function resetPassword(data) {
 
 export function createUser(data) {
   return request({
-    url: userApi.create,
+    url: userApi.createUser,
     method: 'post',
     data: data
   })
@@ -42,7 +42,7 @@ export function createUser(data) {
 
 export function deleteUser(data) {
   return request({
-    url: userApi.delete,
+    url: userApi.deleteUser,
     method: 'post',
     data: data
   })
@@ -50,7 +50,7 @@ export function deleteUser(data) {
 
 export function findUserList(data) {
   return request({
-    url: userApi.userList,
+    url: userApi.users,
     method: 'post',
     data: data
   })
